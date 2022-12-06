@@ -1,8 +1,5 @@
-import HomePage from "./HomePage/HomePage";
-import CurrentUserPage from "./CurrentUserPage/CurrentUserPage";
 import UnauthorizedPage from "./UnauthorizedPage/UnauthorizedPage";
-import AllBuildingsPage from "./AllBuildingsPage/AllBuildingsPage";
-import AssetsReviewPage from "./AssetsReviewPage";
+import EmployeeePage from "./EmployeePage/EmployeePage"
 
 
-export { HomePage, CurrentUserPage, UnauthorizedPage, AllBuildingsPage, AssetsReviewPage };
+export { UnauthorizedPage, EmployeeePage};

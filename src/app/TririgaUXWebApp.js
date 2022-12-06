@@ -1,17 +1,14 @@
 import React from "react";
 import { createPortal } from "react-dom";
 import { Route, Switch } from "react-router-dom";
-import {CurrentUserPage, AllBuildingsPage, AssetsReviewPage } from "../pages";
+import {EmployeeePage } from "../pages";
 import { Routes } from "../utils";
-import { LoadingServices, MessageServices } from "../services";
-import ShowAppMessages from "./ShowAppMessages";
 
 const cssBase = "tririgaUXWebApp";
 
 export default class TririgaUXWebApp extends React.PureComponent {
   componentDidMount() {
-    MessageServices.addSubscriber(this.onMessageChange);
-    LoadingServices.addSubscriber(this.onLoadingChange);
+    //MessageServices.addSubscriber(this.onMessageChange);
   }
 
   state = {
@@ -24,14 +21,8 @@ export default class TririgaUXWebApp extends React.PureComponent {
     return (
       <div className={cssBase}>
         <Switch>
-          <Route path={Routes.CURRENT_USER}>
-            <CurrentUserPage />
-          </Route>
-          <Route exact path={Routes.BUILDINGS}>
-            <AllBuildingsPage />
-          </Route>
-          <Route path="/assetsreview/:id">
-            <AssetsReviewPage />
+          <Route exact path={Routes.EMPLOYEES}>
+            <EmployeeePage/>
           </Route>
         </Switch>
       </div>
@@ -46,7 +37,5 @@ export default class TririgaUXWebApp extends React.PureComponent {
     this.setState({ message });
   };
 
-  clearMessage = () => {
-    MessageServices.clearMessage();
-  };
+
 }

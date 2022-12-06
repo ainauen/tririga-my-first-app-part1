@@ -7,10 +7,9 @@ import {
   fetchTriAppConfig,
   getAuthCheckerForCurrentApp,
 } from "@tririga/tririga-react-components";
-import { TririgaUXWebApp, AppErrorHandlers } from "./app";
+import { TririgaUXWebApp } from "./app";
 import { createAppModel } from "./model";
 import { UnauthorizedPage } from "./pages";
-import { AppMsg } from "./utils";
 import "./index.scss";
 import * as serviceWorker from "./serviceWorker";
 
@@ -30,15 +29,13 @@ async function initApp() {
 async function renderUnauthorizedAccess(currentUser) {
   const rootElement = document.getElementById("root");
   rootElement.dir = currentUser.userDirection;
-  await AppMsg.initMessages(currentUser.languageId);
   ReactDOM.render(<UnauthorizedPage />, rootElement);
 }
 
 async function renderApp(currentUser, appConfig) {
   const rootElement = document.getElementById("root");
   rootElement.dir = currentUser.userDirection;
-  createAppModel(AppErrorHandlers.handleModelErrors);
-  await AppMsg.initMessages(currentUser.languageId);
+  createAppModel();
   ReactDOM.render(
     <BrowserRouter basename={appConfig.appPath}>
       <TririgaUXWebApp />
