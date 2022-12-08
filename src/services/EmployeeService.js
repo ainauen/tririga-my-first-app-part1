@@ -1,11 +1,11 @@
 
 import { EmployeesDS } from "../model";
 
-export async function getAllEmployees() {
+export async function getAllEmployees(index=0, size=10) {
     let employees = [];
     try {
 
-        employees = await EmployeesDS.getEmployees()
+        employees = await EmployeesDS.getEmployees(index, size)
     } finally {
      
     }
@@ -22,11 +22,11 @@ export async function updateEmployee(employee) {
 }
 
 
-export async function searchEmployees(searchTerm) {
+export async function searchEmployees(searchTerm, index=0, size=10) {
     let employees = [];
     try {
 
-        employees = await EmployeesDS.searchEmployees(searchTerm);
+        employees = await EmployeesDS.searchEmployees(index, size, searchTerm);
     } finally {
 
     }

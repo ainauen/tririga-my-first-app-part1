@@ -1,5 +1,5 @@
 .grid-frame {
-    max-width: 400px;
+    max-width: 510px;
     min-width: 360px;
     margin: auto;
     margin-top: 20px;
@@ -58,4 +58,15 @@
     background: none;
     border: none;
     outline: none;
+}
+
+.navigate-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    
+    button {
+        background:none;
+        border:none;
+    }
 }

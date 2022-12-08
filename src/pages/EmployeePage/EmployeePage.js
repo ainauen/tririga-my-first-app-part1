@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { EmployeeServices } from "../../services";
-import { AiOutlineCheck, AiOutlineClose, AiFillEdit } from "react-icons/ai";
+import { AiOutlineCheck, AiOutlineClose, AiFillEdit, AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai";
 import {SearchBox} from '../../components/SearchBox';
 const EmployeePage = () => {
 
-    useEffect(() => { }, []);
-
     const [searchTerm, setSearchTerm] = useState('');
     const [employees, setEmployees] = useState([]);
+    const [index, setIndex] = useState(0);
+    const [size, setSize] = useState(5);
     const [selectedEmployee, setSelectedEmployee] = useState(-1);
 
     const [editFirstName, setEditFirstName] = useState('');
@@ -16,9 +16,9 @@ const EmployeePage = () => {
     
     useEffect(() => {
         (async () => {
-            renderEmployees(await EmployeeServices.getAllEmployees());
+            renderEmployees(await EmployeeServices.getAllEmployees(index, size));
         })();
-    }, []);
+    }, [index, size]);
     
     const editEmployee = async (index) => {
         setSelectedEmployee(index);
@@ -56,8 +56,15 @@ const EmployeePage = () => {
     }
 
     const onSearch = async() => {
-
         await renderEmployees(await EmployeeServices.searchEmployees(searchTerm));
+    }
+
+    const onIndexChange = async(delta) => {
+        setIndex(Math.max(index + delta), 0);
+    }
+
+    const onSizeChange = async(event) => {
+        setSize(event.target.value);
     }
 
     return (
@@ -108,6 +115,15 @@ const EmployeePage = () => {
                         }
                     })
                 }
+                <div class="navigate-container">
+                    <select onChange={onSizeChange}>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                    </select>
+                    <button onClick={() => onIndexChange(-size)}><AiFillCaretLeft /></button>
+                    <button onClick={() => onIndexChange(size)}><AiFillCaretRight /></button>
+                </div>
             </div>
         </div>
     );

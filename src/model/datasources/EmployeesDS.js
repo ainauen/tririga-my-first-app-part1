@@ -2,27 +2,33 @@ import { getAppModel } from "../AppModel";
 import { DatasourceNames } from "../../utils";
 
 
-
-export async function getEmployees() {
+async function fetchEmployees(index, size, filters=[]) {
     const response = await getAppModel().getRecord(
         DatasourceNames.GET_EMPLOYEES,
-    );
-    return response.data;
-}
-
-export async function searchEmployees(searchText) {
-    const response = await getAppModel().getRecord(
-        DatasourceNames.GET_EMPLOYEES, 
         {
-            filters: [
-                { name: "firstName", operator: "contains", value: searchText },
-                { operator: "or" },
-                { name: "lastName", operator: "contains", value: searchText },
-            ]
+            page: {
+                from: index,
+                size: size
+            },
+            filters: filters            
         }
     );
-    return response.data;
+    return response.data;  
 }
+export async function getEmployees(index, size) {
+    return await fetchEmployees(index, size)
+}
+
+export async function searchEmployees(searchText, index, size) {
+    return await fetchEmployees(index, size, [
+        { name: "firstName", operator: "contains", value: searchText },
+        { operator: "or" },
+        { name: "lastName", operator: "contains", value: searchText },
+    ])
+}
+
+
+
 
 export async function updateEmployee(employee) {
     const response = await getAppModel().updateRecord(
