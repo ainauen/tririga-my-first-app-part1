@@ -6,67 +6,91 @@ const EmployeePage = () => {
 
     const [searchTerm, setSearchTerm] = useState('');
     const [employees, setEmployees] = useState([]);
-    const [index, setIndex] = useState(0);
-    const [size, setSize] = useState(5);
-    const [selectedEmployee, setSelectedEmployee] = useState(-1);
+    const [employeePerPage, setEmployeePerPage] = useState(5);
+    const [page, setPage] = useState(1)
 
+    const [viewableEmployees, setViewableEmployees] = useState([])
+    const [selectedEmployeeId, setSelectedEmployeeId] = useState(-1);
     const [editFirstName, setEditFirstName] = useState('');
     const [editLastName,  setEditLastName]  = useState('');
     const [editTitle, setEditTitle] = useState('');
     
     useEffect(() => {
         (async () => {
-            renderEmployees(await EmployeeServices.getAllEmployees(index, size));
+            if(employees.length == 0) {
+                let _employees = await EmployeeServices.getAllEmployees();
+                _employees.forEach((item) => {
+                    item.id = item._id;
+                });
+                console.log(_employees)
+                setEmployees(_employees);
+                setViewableEmployees(_employees.slice(employeePerPage * (page - 1), employeePerPage * page));
+            } else {
+                setViewableEmployees(employees.slice(employeePerPage * (page - 1), employeePerPage * page));
+            }
+            
+            
+        
         })();
-    }, [index, size]);
+    }, [page, employeePerPage]);
     
-    const editEmployee = async (index) => {
-        setSelectedEmployee(index);
-        setEditFirstName(employees[index].firstName);
-        setEditLastName(employees[index].lastName);
-        setEditTitle(employees[index].title);
+    const editEmployee = async (id) => {
+        let _employees = viewableEmployees.filter((employee)=>{
+            return id==employee.id
+        });
+        if(_employees.length != 1){
+            return
+        }
+        setSelectedEmployeeId(id);
+        let _employee = _employees[0]
+        setEditFirstName(_employee.firstName);
+        setEditLastName(_employee.lastName);
+        setEditTitle(_employee.title);
     };
 
     const cancelEditEmployee = async(event) => {
-        setSelectedEmployee(-1); 
+        setSelectedEmployeeId(-1); 
     }
 
-    const saveEmployee = async(event) => {
-        setEmployees(employees.map((employee, index)=> {
-            if(index == selectedEmployee) {
-                employee.firstName = editFirstName;
-                employee.lastName = editLastName;
-                employee.title = editTitle
-            }
-            return employee;
-        }));
-        await EmployeeServices.updateEmployee(employees[selectedEmployee]);
-        setSelectedEmployee(-1); 
-    }
+    const saveEmployee = async(id) => {
 
+        let _employees = viewableEmployees.filter((employee)=>{
+            return id==employee.id
+        });
 
-    const renderEmployees = async(_employees) => {
-        await (async () => {
-            _employees.forEach((item) => {
-                item.id = item._id;
-            });
-        })();
+        if(_employees.length != 1){
+            return
+        }
 
-        setEmployees(_employees);
+        let _employee = _employees[0]
+        _employee.firstName = editFirstName;
+        _employee.lastName = editLastName;
+        _employee.title = editTitle
+        await EmployeeServices.updateEmployee(_employee);
+        setSelectedEmployeeId(-1); 
     }
 
     const onSearch = async() => {
         await renderEmployees(await EmployeeServices.searchEmployees(searchTerm));
     }
 
-    const onIndexChange = async(delta) => {
-        setIndex(Math.max(index + delta), 0);
+    const pageChange = async(direction) => {
+
+        if((direction == -1 && page == 1) || (direction==1 && page+1 > Math.ceil(employees.length / employeePerPage))) {
+            return 
+        }
+        setSelectedEmployeeId(-1); 
+        setPage(page+direction)
+
     }
 
-    const onSizeChange = async(event) => {
-        setSize(event.target.value);
+    const onEmployeePerPageChange = async(_employeePerPage) => {
+        if(_employeePerPage == employeePerPage) {
+            return
+        }
+        setEmployeePerPage(_employeePerPage)
+        setPage(1)
     }
-
     return (
         <div> 
             <div className="grid-frame">
@@ -78,12 +102,12 @@ const EmployeePage = () => {
                     <div class="table-cell header">Title</div>
                 </div>
                 {
-                    employees.map((employee, index)=>{
-                        if(index == selectedEmployee) {
+                    viewableEmployees.map((employee)=>{
+                        if(employee.id == selectedEmployeeId) {
                             return (
                                 <div className="table-row">
                                     <div class="table-cell-button">
-                                        <button onClick={saveEmployee}><AiOutlineCheck /></button>
+                                        <button onClick={() => saveEmployee(employee.id)}><AiOutlineCheck /></button>
                                         <button onClick={cancelEditEmployee}><AiOutlineClose /></button>
                                     </div>
                                     <input class="table-cell-input"
@@ -106,7 +130,7 @@ const EmployeePage = () => {
                         } else {
                             return (
                                 <div className="table-row">
-                                    <div class="table-cell-button"><button onClick={() => editEmployee(index)}><AiFillEdit /></button></div>
+                                    <div class="table-cell-button"><button onClick={() => editEmployee(employee.id)}><AiFillEdit /></button></div>
                                     <div class="table-cell">{employee.firstName}</div>
                                     <div class="table-cell">{employee.lastName}</div>
                                     <div class="table-cell">{employee.title}</div>
@@ -116,13 +140,13 @@ const EmployeePage = () => {
                     })
                 }
                 <div class="navigate-container">
-                    <select onChange={onSizeChange}>
+                    <select onChange={(event) => {onEmployeePerPageChange(event.target.value)}}>
                         <option value="5">5</option>
                         <option value="10">10</option>
-                        <option value="20">20</option>
+                        <option value="15">15</option>
                     </select>
-                    <button onClick={() => onIndexChange(-size)}><AiFillCaretLeft /></button>
-                    <button onClick={() => onIndexChange(size)}><AiFillCaretRight /></button>
+                    <button onClick={() => pageChange(-1)}><AiFillCaretLeft /></button>
+                    <button onClick={() => pageChange(1)}><AiFillCaretRight /></button>
                 </div>
             </div>
         </div>
