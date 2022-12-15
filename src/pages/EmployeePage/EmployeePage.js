@@ -2,18 +2,23 @@ import React, { useState, useEffect } from "react";
 import { EmployeeServices } from "../../services";
 import { AiOutlineCheck, AiOutlineClose, AiFillEdit, AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai";
 import {SearchBox} from '../../components/SearchBox';
+
+
 const EmployeePage = () => {
 
-    const [searchTerm, setSearchTerm] = useState('');
+    const [filter, setFilter] = useState('');
     const [employees, setEmployees] = useState([]);
     const [employeePerPage, setEmployeePerPage] = useState(5);
     const [page, setPage] = useState(1)
 
     const [viewableEmployees, setViewableEmployees] = useState([])
-    const [selectedEmployeeId, setSelectedEmployeeId] = useState(-1);
-    const [editFirstName, setEditFirstName] = useState('');
-    const [editLastName,  setEditLastName]  = useState('');
-    const [editTitle, setEditTitle] = useState('');
+
+    const [editableEmployee, setEditableEmployee] = useState({
+        id: -1,
+        firstName: '',
+        lastName: '',
+        title: ''
+    })
     
     useEffect(() => {
         (async () => {
@@ -26,30 +31,51 @@ const EmployeePage = () => {
                 setEmployees(_employees);
                 setViewableEmployees(_employees.slice(employeePerPage * (page - 1), employeePerPage * page));
             } else {
-                setViewableEmployees(employees.slice(employeePerPage * (page - 1), employeePerPage * page));
+                await renderEmployees();
             }
-            
-            
-        
         })();
-    }, [page, employeePerPage]);
+    }, [page, employeePerPage, filter]);
     
+    const renderEmployees = async() => {
+        if(filter === '') {
+            setViewableEmployees(employees.slice(employeePerPage * (page - 1), employeePerPage * page));
+        } else {
+            let _employees = employees.filter(
+                (employee) => {return (employee.firstName.toLowerCase().includes(filter.toLowerCase()) || employee.lastName.toLowerCase().includes(filter.toLowerCase()))}
+            ).slice(employeePerPage * (page - 1), employeePerPage * page)
+            setViewableEmployees(_employees);
+        }  
+        
+    }
+
+
     const editEmployee = async (id) => {
+
         let _employees = viewableEmployees.filter((employee)=>{
             return id==employee.id
         });
+
         if(_employees.length != 1){
             return
         }
-        setSelectedEmployeeId(id);
+
         let _employee = _employees[0]
-        setEditFirstName(_employee.firstName);
-        setEditLastName(_employee.lastName);
-        setEditTitle(_employee.title);
+
+        setEditableEmployee({
+            id: id,
+            firstName: _employee.firstName,
+            lastName: _employee.lastName,
+            title: _employee.title
+        });
     };
 
     const cancelEditEmployee = async(event) => {
-        setSelectedEmployeeId(-1); 
+        setEditableEmployee({
+            id: -1,
+            firstName: '',
+            lastName: '',
+            title: ''
+        });
     }
 
     const saveEmployee = async(id) => {
@@ -63,23 +89,37 @@ const EmployeePage = () => {
         }
 
         let _employee = _employees[0]
-        _employee.firstName = editFirstName;
-        _employee.lastName = editLastName;
-        _employee.title = editTitle
+        _employee.firstName = editableEmployee.firstName;
+        _employee.lastName = editableEmployee.lastName;
+        _employee.title = editableEmployee.title;
+        
         await EmployeeServices.updateEmployee(_employee);
-        setSelectedEmployeeId(-1); 
+        setEditableEmployee({
+            id: -1,
+            firstName: '',
+            lastName: '',
+            title: ''
+        });
     }
 
-    const onSearch = async() => {
-        await renderEmployees(await EmployeeServices.searchEmployees(searchTerm));
-    }
+
 
     const pageChange = async(direction) => {
 
         if((direction == -1 && page == 1) || (direction==1 && page+1 > Math.ceil(employees.length / employeePerPage))) {
             return 
         }
-        setSelectedEmployeeId(-1); 
+
+        if(page == 1 && viewableEmployees <= employeePerPage) {
+            return
+        }
+        
+        setEditableEmployee({
+            id: -1,
+            firstName: '',
+            lastName: '',
+            title: ''
+        });
         setPage(page+direction)
 
     }
@@ -91,10 +131,15 @@ const EmployeePage = () => {
         setEmployeePerPage(_employeePerPage)
         setPage(1)
     }
+
+    const onEmployeeChange = async(event) => {
+        const { name, value } = event.target;
+        setEditableEmployee((prevState) => ({ ...prevState, [name]: value }));
+    }
     return (
         <div> 
             <div className="grid-frame">
-                <SearchBox searchTerm={searchTerm} onSearchTermChange={(event)=> {setSearchTerm(event.target.value)}} onSearch={onSearch}/>
+                <SearchBox searchTerm={filter} onSearchTermChange={(event)=> {setFilter(event.target.value)}}/>
                 <div className="table-row">
                     <div class="table-cell-button"> </div>
                     <div class="table-cell header">First Name</div>
@@ -103,27 +148,31 @@ const EmployeePage = () => {
                 </div>
                 {
                     viewableEmployees.map((employee)=>{
-                        if(employee.id == selectedEmployeeId) {
+                        if(employee.id == editableEmployee.id) {
                             return (
                                 <div className="table-row">
+
                                     <div class="table-cell-button">
                                         <button onClick={() => saveEmployee(employee.id)}><AiOutlineCheck /></button>
                                         <button onClick={cancelEditEmployee}><AiOutlineClose /></button>
                                     </div>
                                     <input class="table-cell-input"
                                         type="text"
-                                        value={editFirstName}
-                                        onChange={(event) => setEditFirstName(event.target.value)}
+                                        name="firstName"
+                                        value={editableEmployee.firstName}
+                                        onChange={onEmployeeChange}
                                     />
                                     <input class="table-cell-input"
                                         type="text"
-                                        value={editLastName}
-                                        onChange={(event) => setEditLastName(event.target.value)}
+                                        name="lastName"
+                                        value={editableEmployee.lastName}
+                                        onChange={onEmployeeChange}
                                     />
                                     <input class="table-cell-input"
                                         type="text"
-                                        value={editTitle}
-                                        onChange={(event) => setEditTitle(event.target.value)}
+                                        name="title"
+                                        value={editableEmployee.title}
+                                        onChange={onEmployeeChange}
                                     />
                                 </div>
                             );
