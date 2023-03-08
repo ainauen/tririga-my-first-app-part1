@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { EmployeeServices } from "../../services";
 import { AiOutlineCheck, AiOutlineClose, AiFillEdit, AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai";
 import {SearchBox} from '../../components/SearchBox';
-
+import { useHistory } from "react-router-dom";
 
 const EmployeePage = () => {
 
@@ -19,7 +19,11 @@ const EmployeePage = () => {
         lastName: '',
         title: ''
     })
-    
+
+    const history = useHistory();
+    const home = () => {
+        history.push("/");
+    }
     useEffect(() => {
         (async () => {
             if(employees.length == 0) {
@@ -197,6 +201,11 @@ const EmployeePage = () => {
                     <button onClick={() => pageChange(-1)}><AiFillCaretLeft /></button>
                     <button onClick={() => pageChange(1)}><AiFillCaretRight /></button>
                 </div>
+            </div>
+            <div>
+                <button className="btn btn-success"
+                    onClick={Home}> Go Home
+                </button>
             </div>
         </div>
     );

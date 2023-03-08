@@ -1,2 +1,3 @@
 export const CURRENT_USER = "/user";
-export const EMPLOYEES = "/";
+export const EMPLOYEES = "/employees";
+export const HOME = "/";
