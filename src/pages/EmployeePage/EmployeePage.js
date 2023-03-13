@@ -202,9 +202,9 @@ const EmployeePage = () => {
                     <button onClick={() => pageChange(1)}><AiFillCaretRight /></button>
                 </div>
             </div>
-            <div>
+            <div className="goHome">
                 <button className="btn btn-success"
-                    onClick={Home}> Go Home
+                    onClick={home}> Go Home
                 </button>
             </div>
         </div>

@@ -11,19 +11,16 @@ const HomePage =() => {
             <div className="jumbotron text-center">
                 <h1 className="display-4">Hello From Tririga!</h1>
                 <p className="lead">
-                    Geeks for Geeks is a Computer Science portal.  
-                    It contains well written, well thought and well 
-                    explained computer science and programming articles
+                    React tutorial, brought to you by SERCO to teach you how to build a React App and have it run on the Tririga Server!
                 </p>
   
                 <hr className="my-4" />
-                <p>
-                    Real-time Live and self paced courses carefully
-                    curated for you !
+                <p className="mr-2 ml-2">
+                    Real-time Live and self paced courses, designed for anyone to learn!
                 </p>
   
                 <p className="lead">
-                    <button className="btn btn-success"
+                    <button className="btn btn-success mb-2"
                         onClick={employees}> See Employees
                     </button>
                 </p>
