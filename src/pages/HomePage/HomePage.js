@@ -19,11 +19,11 @@ const HomePage =() => {
                     Real-time Live and self paced courses, designed for anyone to learn!
                 </p>
   
-                <p className="lead">
+                {/* <p className="lead">
                     <button className="btn btn-secondary m-3"
                         onClick={employees}> See Employees
                     </button>
-                </p>
+                </p> */}
   
             </div>
     </div>
