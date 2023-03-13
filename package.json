@@ -6,7 +6,7 @@
     "@tririga/cra-template": "1.0.1",
     "@tririga/tri-deploy": "^1.2.3",
     "@tririga/tririga-react-components": "^1.2.1",
-    "bootstrap": "^5.2.2",
+    "bootstrap": "^5.2.3",
     "date-fns": "^2.29.3",
     "react": "^18.2.0",
     "react-bootstrap": "^2.5.0",

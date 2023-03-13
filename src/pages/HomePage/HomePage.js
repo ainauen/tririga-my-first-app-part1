@@ -15,12 +15,12 @@ const HomePage =() => {
                 </p>
   
                 <hr className="my-4" />
-                <p className="mr-2 ml-2">
+                <p className="mr-2 ml-2 p-3">
                     Real-time Live and self paced courses, designed for anyone to learn!
                 </p>
   
                 <p className="lead">
-                    <button className="btn btn-success mb-2"
+                    <button className="btn btn-secondary m-3"
                         onClick={employees}> See Employees
                     </button>
                 </p>
