@@ -2,7 +2,6 @@ import React from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { createPortal } from "react-dom";
 import { Route, Switch } from "react-router-dom";
-//import {EmployeeePage, HomePage } from "../pages";
 import {HomePage } from "../pages";
 import { Routes } from "../utils";
 
@@ -23,9 +22,6 @@ export default class TririgaUXWebApp extends React.PureComponent {
     return (
       <div className={cssBase}>
         <Switch>
-          {/* <Route exact path={Routes.EMPLOYEES}>
-            <EmployeeePage/>
-          </Route> */}
           <Route exact path={Routes.HOME}>
             <HomePage/>
           </Route>
