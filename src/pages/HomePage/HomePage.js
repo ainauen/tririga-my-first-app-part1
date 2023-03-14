@@ -1,11 +1,11 @@
 import React from 'react'
-import { useHistory } from "react-router-dom";
+//import { useHistory } from "react-router-dom";
   
 const HomePage =() => {
-    const history = useHistory();
-    const employees = () => {
-        history.push("/employees");
-    }
+    // const history = useHistory();
+    // const employees = () => {
+    //     history.push("/employees");
+    // }
     return (
         <div>
             <div className="jumbotron text-center">
@@ -18,12 +18,6 @@ const HomePage =() => {
                 <p className="mr-2 ml-2 p-3">
                     Real-time Live and self paced courses, designed for anyone to learn!
                 </p>
-  
-                {/* <p className="lead">
-                    <button className="btn btn-secondary m-3"
-                        onClick={employees}> See Employees
-                    </button>
-                </p> */}
   
             </div>
     </div>
